@@ -1,2 +1,2 @@
 #!/bin/bash
-mkdir -p welcome/to/bethel
+makdir -p welcome/to/bethel
