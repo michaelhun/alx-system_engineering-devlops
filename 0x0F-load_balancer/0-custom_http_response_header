@@ -47,4 +47,4 @@ EOF
 echo "$server_config" | sudo tee /etc/nginx/sites-enabled/default >/dev/null
 
 # Restart Nginx service
-sudo service nginx restart
+sudo service nginx restar
