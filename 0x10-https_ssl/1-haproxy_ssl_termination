@@ -33,7 +33,7 @@ defaults
 	errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
-listen 89382-lb-01
+listen 14981-lb-01
         bind *:80
         mode http
         balance roundrobin
