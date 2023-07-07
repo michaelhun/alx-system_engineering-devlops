@@ -33,11 +33,22 @@ defaults
 	errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
-listen 14981-lb-01
+# start of parameters for beta-scribbles.tech
+frontend www-http
         bind *:80
         mode http
+        http-request set-header X-Forwarded-Proto http
+        default_backend  www-backend
+
+
+frontend  www-https
+        bind *:443 ssl crt /etc/ssl/beta-scribbles.tech.pem
+        http-request set-header X-Forwarded-Proto https
+        default_backend beta-scribbles.tech-backend
+
+
+backend www-backend
         balance roundrobin
-        option httpclose
-        option forwardfor
         server 14981-web-01 100.26.165.95:80 check
         server 14981-web-02 34.207.188.214:80 check
+# end of parameters
