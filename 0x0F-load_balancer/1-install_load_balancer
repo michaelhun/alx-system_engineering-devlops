@@ -1,27 +1,18 @@
 #!/usr/bin/env bash
-# Update the system
-sudo apt-get update
-
-# Install HAProxy
-sudo apt-get -y install haproxy
-
-# Configure HAProxy
-config_string=\
-"
-frontend server-frontend
-    bind *:80
-    mode http
-    default_backend server_backend
-
-backend server_backend
-    balance roundrobin
-    server 14981-web-01 100.26.165.95:80 check
-    server 14981-web-02 34.207.188.214:80 check
-"
-echo "$config_string" | sudo tee -a /etc/haproxy/haproxy.cfg
-
-# Enable HAProxy init script
-echo 'ENABLED=1' | sudo tee -a /etc/default/haproxy
-
-# Restart HAProxy
-sudo service haproxy restart
+# Bash script that configures a new Ubuntu machine
+# Configure HAproxy to send traffic to web-01 & web-02
+# Use roundrobin algorithm for distribution
+apt-get -y update
+apt-get -y install haproxy
+printf %s "
+backend web-servers
+        balance roundrobin
+        option forwardfor
+        server 14981-web-01 100.26.165.95:80 check
+        server 14981-web-02 34.207.188.214:80 check
+frontend haproxy_balancer
+         bind *:80
+         mode http
+         default_backend web-servers
+" >> /etc/haproxy/haproxy.cfg
+service haproxy restart
