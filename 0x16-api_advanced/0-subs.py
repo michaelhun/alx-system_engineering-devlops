@@ -1,19 +1,25 @@
+#!/usr/bin/python3
+'''
+module 0-subs:
+Queries the Reddit API and for number of subreddit subscribers
+'''
 import requests
 
-def number_of_subscribers(subreddit):
-    url = f"https://www.reddit.com/r/{subreddit}/about.json"
-    headers = {'User-Agent': 'Custom User Agent'}
 
-    try:
-        response = requests.get(url, headers=headers, allow_redirects=False)
-        if response.status_code == 200:
-            data = response.json()
+def number_of_subscribers(subreddit):
+    '''
+    returns the number of subscribers for a given subreddit.
+    '''
+    about_url = f'https://www.reddit.com/r/{subreddit}/about.json'
+    user_agent = {'User-Agent': 'MyRedditScript/1.0'}
+
+    res = requests.get(about_url, headers=user_agent)
+
+    if res.status_code == 200:
+        try:
+            data = res.json()
             return data['data']['subscribers']
-        elif response.status_code == 404:
+        except (KeyError, ValueError):
             return 0
-        else:
-            print(f"Error: Unable to fetch data for subreddit '{subreddit}'. Status code: {response.status_code}")
-            return 0
-    except requests.RequestException as e:
-        print(f"Error: {e}")
+    else:
         return 0
