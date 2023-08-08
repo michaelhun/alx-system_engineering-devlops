@@ -1,21 +1,19 @@
 import requests
 
 def number_of_subscribers(subreddit):
-    base_url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-    headers = {"User-Agent": "Custom User Agent"}
+    url = f"https://www.reddit.com/r/{subreddit}/about.json"
+    headers = {'User-Agent': 'Custom User Agent'}
 
-    response = requests.get(base_url, headers=headers, allow_redirects=False)
-
-    if response.status_code == 200:
-        try:
+    try:
+        response = requests.get(url, headers=headers, allow_redirects=False)
+        if response.status_code == 200:
             data = response.json()
-            return data["data"]["subscribers"]
-        except KeyError:
-            print("Invalid subreddit data format")
+            return data['data']['subscribers']
+        elif response.status_code == 404:
             return 0
-    elif response.status_code == 404:
-        print("Subreddit not found")
-        return 0
-    else:
-        print("Error occurred while fetching subreddit data")
+        else:
+            print(f"Error: Unable to fetch data for subreddit '{subreddit}'. Status code: {response.status_code}")
+            return 0
+    except requests.RequestException as e:
+        print(f"Error: {e}")
         return 0
